@@ -1,52 +1,40 @@
-class Player {
-  constructor () {
-    this.currentlyPlaying = album.songs[0];
-    this.playState = 'stopped';
-    this.volume = 80;
-    this.soundObject = new buzz.sound(this.currentlyPlaying.soundFileUrl);
-  }
+{$('button#play-pause').on('click', function() {
+    helper.playPauseAndUpdate();
+    $(this).attr('playState', player.playState);
+  });
 
-  getDuration() {
-    return this.soundObject.getDuration();
-  }
+  $('button#next').on('click', function() {
+    if (player.playState !== 'playing') { return; }
 
-  getTime() {
-    return this.soundObject.getTime();
-  }
+    const currentSongIndex = album.songs.indexOf(player.currentlyPlaying);
+    const nextSongIndex = currentSongIndex + 1;
+    if (nextSongIndex >= album.songs.length) { return; }
 
-  playPause (song = this.currentlyPlaying) {
-    if (this.currentlyPlaying !== song) {
-      // Stop the currently playing sound file (even if nothing is playing)
-      this.soundObject.stop();
-      // Clear classes on the song that's currently playing
-      this.currentlyPlaying.element.removeClass('playing paused');
+    const nextSong = album.songs[nextSongIndex];
+    helper.playPauseAndUpdate(nextSong)
+    });
 
-      // Update our currentlyPlaying and playState properties
-      this.currentlyPlaying = song;
-      this.playState = 'stopped';
-      this.soundObject = new buzz.sound(this.currentlyPlaying.soundFileUrl);
-    }
-    if (this.playState === 'paused' || this.playState === 'stopped') {
-      this.soundObject.setVolume( this.volume );
-      this.soundObject.play();
-      this.playState = 'playing';
-      this.currentlyPlaying.element.removeClass('paused').addClass('playing');
-    } else {
-      this.soundObject.pause();
-      this.playState = 'paused';
-      this.currentlyPlaying.element.removeClass('playing').addClass('paused');
-    }
-  }
+ $('button#previous').on('click', function() {
+      if (player.playState !== 'playing') { return; }
 
-  skipTo (percent) {
-    if (this.playState !== 'playing') { return }
-    this.soundObject.setTime( (percent / 100) * this.soundObject.getDuration() );
-  }
+      const currentSongIndex = album.songs.indexOf(player.currentlyPlaying);
+      const previousSongIndex = currentSongIndex - 1;
+      if (previousSongIndex < 0) { return; }
 
-  setVolume (percent) {
-    this.volume = percent;
-    this.soundObject.setVolume(percent);
-  }
+      const previousSong = album.songs[previousSongIndex];
+      helper.playPauseAndUpdate(previousSong);
+});
+
+    $('#time-control input').on('input', function (event) {
+      player.skipTo(event.target.value);
+      });
+
+    setInterval( () => {
+      if (player.playState !== 'playing') { return; }
+      const currentTime = player.getTime();
+      const duration = player.getDuration();
+      const percent = (currentTime / duration) * 100;
+      $('#time-control .current-time').text( currentTime );
+      $('#time-control input').val(percent);
+      }, 1000);
 }
-
-const player = new Player();
