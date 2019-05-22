@@ -1,4 +1,5 @@
-{$('button#play-pause').on('click', function() {
+{
+  $('button#play-pause').on('click', function() {
     helper.playPauseAndUpdate();
     $(this).attr('playState', player.playState);
   });
@@ -37,7 +38,7 @@
       $('#time-control .current-time').text( currentTime );
       $('#time-control input').val(percent);
       }, 1000);
-}
+
 
 
 
@@ -52,7 +53,5 @@
       helper.playPauseAndUpdate(previousSong);
 
 });
-
-
 
 }
