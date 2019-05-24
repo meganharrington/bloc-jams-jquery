@@ -38,6 +38,7 @@
       $('#time-control .current-time').text( currentTime );
       $('#time-control input').val(percent);
       }, 1000);
+<<<<<<< HEAD
 
 
 
@@ -54,4 +55,6 @@
 
 });
 
+=======
+>>>>>>> assignment-13-18
 }
